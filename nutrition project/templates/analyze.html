@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nutrition Analyzer</title>
+    <style>
+        body {
+            background-color: #f3f9f8;
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c8a78;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #2c8a78;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #256c5e;
+        }
+        table {
+            margin: 30px auto;
+            width: 90%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+        th {
+            background-color: #2c8a78;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🔍 Nutrition Analyzer</h2>
+
+<form method="POST">
+    <textarea name="meal_text" placeholder="Paste your meal here...">{{ request.form.meal_text or '' }}</textarea><br>
+    <button type="submit">Analyze</button>
+</form>
+
+{% if nutrition %}
+    <h2 style="margin-top: 50px;">🧪 Nutrient Breakdown</h2>
+    {% for food, nutrients in nutrition.items() %}
+        <h3>{{ food }}</h3>
+        <table>
+            <tr>
+                {% for key in nutrients.keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for value in nutrients.values() %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>

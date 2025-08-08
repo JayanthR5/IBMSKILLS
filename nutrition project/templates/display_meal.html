@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Meal Plan</title>
+    <style>
+        body {
+            background-color: #f7fff9;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c8a78;
+        }
+        ul {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            list-style: none;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #2c8a78;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-right: 10px; /* Added spacing between buttons */
+        }
+        .btn:hover {
+            background-color: #256c5e;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<h1>🍱 Your Generated Meal Plan</h1>
+
+{% if meal %}
+<ul id="meal-plan-list">
+    {% for meal_type, description in meal.items() %}
+    <li><strong>{{ meal_type }}:</strong> {{ description }}</li>
+    {% endfor %}
+</ul>
+
+<div style="text-align: center;">
+    <button class="btn" onclick="copyMealPlan()">Copy Meal Plan</button>
+    <button class="btn" onclick="exportToPdf()">Export to PDF</button>
+</div>
+
+{% else %}
+<p>No meal plan available. Please go back and generate one.</p>
+{% endif %}
+
+<script>
+    function copyMealPlan() {
+        // Get the ul element by its ID
+        const mealList = document.getElementById('meal-plan-list');
+        
+        // Extract the text content from the list
+        const mealPlanText = mealList.innerText;
+
+        // Use the modern Clipboard API to write the text
+        navigator.clipboard.writeText(mealPlanText)
+            .then(() => {
+                alert('Meal plan copied to clipboard!');
+            })
+            .catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy meal plan.');
+            });
+    }
+
+    function exportToPdf() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Get the text content of the meal plan list
+        const mealList = document.getElementById('meal-plan-list');
+        const mealPlanText = mealList.innerText;
+
+        // Add a title
+        doc.setFontSize(22);
+        doc.text("Your Generated Meal Plan", 10, 20);
+
+        // Split the text into lines and add to the PDF
+        const lines = mealPlanText.split('\n');
+        doc.setFontSize(12);
+        let yPos = 30;
+        lines.forEach(line => {
+            if (line.trim() !== '') {
+                doc.text(line, 10, yPos);
+                yPos += 10;
+            }
+        });
+
+        // Save the PDF with a filename
+        doc.save("MealPlan.pdf");
+    }
+</script>
+
+</body>
+</html>

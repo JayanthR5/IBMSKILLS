@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generating Meal Plan...</title>
+    <style>
+        body {
+            background-color: #f3f9f8;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 100px;
+        }
+        h1 {
+            color: #2c8a78;
+        }
+        /* Simple spinner for visual feedback */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #2c8a78;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        // Poll for the meal plan file every 2 seconds
+        // This is a simple client-side polling mechanism to check if the file is ready
+        setInterval(function() {
+            fetch('/check_meal_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ready') {
+                    window.location.href = '/display_meal';
+                }
+            })
+            .catch(error => console.error('Error checking meal status:', error));
+        }, 2000);
+    </script>
+</head>
+<body>
+    <h1>Generating Your Meal Plan...</h1>
+    <div class="loader"></div>
+    <p>Please wait while we prepare your personalized recipes.</p>
+</body>
+</html>

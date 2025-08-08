@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nutrition Aware Meal Planner</title>
+    <style>
+        body {
+            background-color: #f3f9f8;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            background-color: #ddd;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        h1 {
+            text-align: center;
+            color: #2c8a78;
+            margin-top: 30px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border-top: 2px solid #ccc;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 5px;
+            width: 150px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn {
+            background-color: #2c8a78;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #256c5e;
+        }
+        #meal-output {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #meal-output h3 {
+            color: #2c8a78;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 15px;
+            background-color: #ccc;
+            color: black;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-btn:hover {
+            background-color: #bbb;
+        }
+        /* ... Your CSS is correct, no changes needed here ... */
+    </style>
+</head>
+<body>
+
+    <div class="nav">
+        <a href="#">Meal Plan</a> |
+        <a href="#">Daily Tip</a> |
+        <a href="#">Community Recipes</a> |
+        <a href="#">Download PDF</a>
+    </div>
+
+    <h1>Nutrition Aware Meal Planner 🍽️</h1>
+
+    <div class="form-container">
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" min="1" max="100">
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="diet">Diet Type:</label>
+            <select id="diet" name="diet">
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Non-Vegetarian">Non-Vegetarian</option>
+                <option value="Vegan">Vegan</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="budget">Budget:</label>
+            <input type="number" id="budget" name="budget" min="1">
+        </div>
+        <button class="btn" onclick="generateMeal()">Generate Meal Plan</button>
+        <button class="btn" >Voice Assistant</button>
+    </div>
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('index') }}" class="back-btn">Back</a>
+    </div>
+
+    <script>
+        function generateMeal() {
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const diet = document.getElementById('diet').value;
+            const budget = document.getElementById('budget').value;
+
+            const data = {
+                age: age,
+                gender: gender,
+                diet_type: diet,
+                budget: budget
+            };
+
+            fetch('/generate_meal_plan', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to trigger meal plan. Status: " + response.status);
+                }
+                return response.json();
+            })
+            .then(result => {
+                // After successfully triggering the playbook, redirect to the loading page
+                window.location.href = '/loading';
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong. See console for error.");
+            });
+        }
+    </script>
+    <div style="text-align: center; margin-top: 30px;">
+    <a href="{{ url_for('analyze') }}">
+        <button style="
+            background-color: #2c8a78;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;">
+            Analyze Nutrition 🔍🔍
+        </button>
+    </a>
+</div>
+</body>
+</html>
